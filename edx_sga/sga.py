@@ -213,8 +213,10 @@ class StaffGradedAssignmentXBlock(XBlock):
                 context
             )
         )
+        
         fragment.add_css(_resource("static/css/edx_sga.css"))
         fragment.add_javascript(_resource("static/js/src/edx_sga.js"))
+
         fragment.initialize_js('StaffGradedAssignmentXBlock')
         return fragment
 
@@ -362,6 +364,7 @@ class StaffGradedAssignmentXBlock(XBlock):
                     context
                 )
             )
+
             fragment.add_javascript(_resource("static/js/src/studio.js"))
             fragment.initialize_js('StaffGradedAssignmentXBlock')
             return fragment

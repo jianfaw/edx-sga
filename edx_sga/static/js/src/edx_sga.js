@@ -203,7 +203,7 @@ function StaffGradedAssignmentXBlock(runtime, element) {
                  * See: https://github.com/mitodl/edx-sga/issues/13
                  */
                 setTimeout(function() {
-                    $('#grade-submissions-button').click();
+                    //$('#grade-submissions-button').click();
                 }, 225);
             });
         }
