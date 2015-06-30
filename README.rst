@@ -21,7 +21,7 @@ Try Out on devstack/fullstack
 
    -  ``sudo su - edxapp -s /bin/bash``
    -  ``. edxapp_env``
-   -  ``pip install -e git+https://github.com/jianaw/edx-sga@master#egg=edx-sga``
+   -  ``pip install -e git+https://github.com/jianfaw/edx-sga@master#egg=edx-sga``
 
 2. Add edx\_sga to installed Django apps
 
