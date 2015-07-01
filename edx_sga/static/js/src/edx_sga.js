@@ -17,6 +17,8 @@ function StaffGradedAssignmentXBlock(runtime, element) {
         var template = _.template($(element).find("#sga-tmpl").text());
         var gradingTemplate;
 
+        var lastclickg_grade_submission_button;
+
         function render(state) {
             // Add download urls to template context
             state.downloadUrl = downloadUrl;
@@ -30,31 +32,22 @@ function StaffGradedAssignmentXBlock(runtime, element) {
             var fileUpload = $(content).find('.fileupload').fileupload({
                 url: uploadUrl,
                 add: function(e, data) {
-                    var do_upload = $(content).find('.upload').html('');
-                    $(content).find('p.error').html('');
-                    $('<button/>')
-                        .text('Upload ' + data.files[0].name)
-                        .appendTo(do_upload)
-                        .click(function() {
-                            do_upload.text('Uploading...');
-                            var block = $(element).find(".sga-block");
-                            var data_max_size = block.attr("data-max-size");
-                            var size = data.files[0].size;
-                            if (!_.isUndefined(size)) {
-                                //if file size is larger max file size define in env(django)
-                                if (size >= data_max_size) {
-                                    state.error = 'The file you are trying to upload is too large.';
-                                    render(state);
-                                    return;
-                                }
-                            }
-                            data.submit();
-                        });
+                    var block = $(element).find(".sga-block");
+                    var data_max_size = block.attr("data-max-size");
+                    var size = data.files[0].size;
+                    if (!_.isUndefined(size)) {
+                        //if file size is larger max file size define in env(django)
+                        if (size >= data_max_size) {
+                            state.error = 'The file you are trying to upload is too large.';
+                            render(state);
+                            return;
+                        }
+                    }
+                    data.submit();
                 },
                 progressall: function(e, data) {
                     var percent = parseInt(data.loaded / data.total * 100, 10);
-                    $(content).find('.upload').text(
-                        'Uploading... ' + percent + '%');
+                    $(content).find('.upload').html('<span style="display:block;padding:6px 0px;">Uploading... ' + percent + '%</span>');
                 },
                 fail: function(e, data) {
                     /**
@@ -139,14 +132,14 @@ function StaffGradedAssignmentXBlock(runtime, element) {
                     url: url,
                     progressall: function(e, data) {
                         var percent = parseInt(data.loaded / data.total * 100, 10);
-                        row.find('.upload').text('Uploading... ' + percent + '%');
+                        row.find('.upload').html('<span style="display:block;padding:6px 0px;">Uploading... ' + percent + '%</span>');
                     },
                     done: function(e, data) {
                         // Add a time delay so user will notice upload finishing
                         // for small files
                         setTimeout(
                             function() { renderStaffGrading(data.result); },
-                            3000);
+                            750);
                     }
                 });
 
@@ -203,7 +196,8 @@ function StaffGradedAssignmentXBlock(runtime, element) {
                  * See: https://github.com/mitodl/edx-sga/issues/13
                  */
                 setTimeout(function() {
-                    //$('#grade-submissions-button').click();
+                    if(lastclickg_grade_submission_button)
+                        lastclickg_grade_submission_button.click();
                 }, 225);
             });
         }
@@ -235,15 +229,16 @@ function StaffGradedAssignmentXBlock(runtime, element) {
             if (is_staff) {
                 gradingTemplate = _.template(
                     $(element).find('#sga-grading-tmpl').text());
-                block.find('#grade-submissions-button')
+                block.find('.grade-submissions-button')
                     .leanModal()
                     .on('click', function() {
+                        lastclickg_grade_submission_button = $(this);
                         $.ajax({
                             url: getStaffGradingUrl,
                             success: renderStaffGrading
                         });
                     });
-                block.find('#staff-debug-info-button')
+                block.find('.staff-debug-info-button')
                     .leanModal();
             }
         });

@@ -11,6 +11,8 @@ import os
 import pkg_resources
 import pytz
 
+from django.utils.http import urlquote
+
 from functools import partial
 
 from courseware.models import StudentModule
@@ -523,7 +525,7 @@ class StaffGradedAssignmentXBlock(XBlock):
         return Response(
             app_iter=app_iter,
             content_type=mime_type,
-            content_disposition="attachment; filename=" + filename)
+            content_disposition='attachment;filename="' + urlquote(filename) +'"')
 
     @XBlock.handler
     def get_staff_grading_data(self, request, suffix=''):

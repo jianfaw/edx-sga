@@ -3,49 +3,61 @@
 <div class="sga-block" data-state="{{ student_state }}" data-max-size="{{ max_file_size }}" data-staff="{{ is_course_staff }}">
  
   <script type="text/template" id="sga-tmpl">
-    <% if (display_name) { %>
-       <b><%= display_name %></b><br/>
-    <% } %>
-
-    <% if (uploaded) { %>
-      <p><b>File uploaded</b> 
-        <a href="<%= downloadUrl %>"><%= uploaded.filename %></a></p>
-    <% } else { %>
-      <p>No file has been uploaded.</p>
-    <% } %>
-
-    <% if (graded) { %>
-      <p>Your score is <%= graded.score %> / <%= max_score %><br/>
-        <% if (graded.comment) { %>
-          <b>Instructor comment</b> <%= graded.comment %>
-        <% } %>
-        <% if (annotated) { %><br/>
-          <b>Annotated file from instructor</b>
-          <a href="<%= annotatedUrl %>"><%= annotated.filename %></a>
-        <% } %>
-      </p>
-    <% } else if (uploaded) { %>
-      {% trans "This assignment has not yet been graded." %}
-    <% } %>
-
-    <% if (upload_allowed) { %>
-    <p>
-      <% if (uploaded) { %>
-        {% trans "Upload a different file" %}
-      <% } else { %>
-        {% trans "Upload your assignment" %}
+    <div style="padding:10px 0px;">
+      <% if (error) { %>
+        <p class="error"><%= error %></p>
       <% } %>
-      <div class="upload">
-        <input class="fileupload" type="file" name="assignment"/>
-        <button>Select a file</button>
-      </div>
-    </p>
-    <% } %>
-
-    <% if (error) { %>
-      <p class="error"><%= error %></p>
-    <% } %>
-  
+      <table style="width: 100%;" cellpadding="5">
+      <% if (display_name) { %>
+        <caption><b><%= display_name %></b></caption>
+      <% } %>
+        <tr>
+          <th style="width:30%;"></th>
+          <th style="width:51%;"></th>
+          <th style="width:19%;"></th>
+        </tr>
+        <tr>
+          <td style="text-align:right;"><b>Your uploaded file</b>:</td>
+          <td>
+          <% if (uploaded) { %>
+            <a class="autocutstring" href="<%= downloadUrl %>" title="<%= uploaded.filename %>"><%= uploaded.filename %></a>
+          <% } %>
+          </td>
+          <td>
+          <% if (upload_allowed) { %>
+            <div class="upload">
+              <input class="fileupload" type="file" name="assignment"/>
+              <button>Select a file</button>
+            </div>
+          <% } %>
+          </td>
+        </tr>
+        <% if(graded) { %>
+        <tr>
+          <td style="text-align:right;"><b>Instructor annotated file</b>:</td>
+          <td colspan="2">
+          <% if (annotated) { %>
+            <a class="autocutstring" href="<%= annotatedUrl %>"><%= annotated.filename %></a>
+          <% } %>
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align:right;"><b>Your score(Max <%= max_score %>)</b>:</td>
+          <td colspan="2">
+              <%= graded.score %>
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align:right;"><b>Instructor comment</b>:</td>
+          <td colspan="2">
+          <% if (graded.comment) { %>
+              <pre style="padding:0px;margin:0px;"><%= graded.comment %></pre>
+          <% } %>
+          </td>
+        </tr>
+        <% } %>
+      </table>
+    </div>
   </script>
 
 
@@ -56,9 +68,9 @@
   <script type="text/template" id="sga-grading-tmpl">
     <table class="gridtable" style="width: 1160px;">
       <tr>
-        <th style="width:17%;">Username</th>
-        <th style="width:10%;">Filename</th>
-        <th style="width:10%;">Annotated</th>
+        <th style="width:9%;">Username</th>
+        <th style="width:14%;">Filename</th>
+        <th style="width:14%;">Annotated</th>
         <th style="width:30%;">Comments</th>
         <th style="width:8%;">Grade</th>
         <th style="width:14%;"></th>
@@ -71,19 +83,19 @@
           <td><%= assignment.fullname %></td>
           <td>
             <% if (assignment.filename) { %>
-              <a href="<%= downloadUrl %>?student_id=<%= assignment.student_id %>">
-                download
+              <a class="autocutstring" href="<%= downloadUrl %>?student_id=<%= assignment.student_id %>" title="<%= assignment.filename %>">
+                <%= assignment.filename %>
               </a>
             <% } %>
           </td>
           <td>
             <% if (assignment.annotated) { %>
-              <a href="<%= annotatedUrl %>?module_id=<%= assignment.module_id %>">
-                download
+              <a class="autocutstring" href="<%= annotatedUrl %>?module_id=<%= assignment.module_id %>" title="<%= assignment.annotated %>">
+                <%= assignment.annotated %>
               </a>
             <% } %>
           </td>
-          <td><%= assignment.comment %></td>
+          <td><span class="autocutstring"><%= assignment.comment %><span></td>
           <td>
             <% if (assignment.score !== null) { %>
               <%= assignment.score %> /
@@ -93,13 +105,13 @@
               <% } %>
             <% } %>
           </td>
-          <td>
+          <td style="padding:1px 5px;">
             <div class="upload">
               <button type="button">Annotated file</button>
               <input class="fileupload" type="file" name="annotated"/>
             </div>
           </td>
-          <td>
+          <td style="padding:1px 5px;">
             <% if (assignment.may_grade) { %>
             <button type="button" class="enter-grade-button" href="#{{ id }}-enter-grade">
               <% if (assignment.needs_approval) { %>
@@ -116,12 +128,8 @@
   </script>
 
   <div aria-hidden="true" class="wrap-instructor-info">
-    <!--
-    <a class="instructor-info-action" id="staff-debug-info-button"
-       href="#{{ id }}-debug">{% trans "Staff Debug Info" %}</a>
-    -->
-    <a class="instructor-info-action" id="grade-submissions-button"
-       href="#{{ id }}-grade">{% trans "Grade Submissions" %}</a>
+    <a class="instructor-info-action staff-debug-info-button" href="#{{ id }}-debug">{% trans "Staff Debug Info" %}</a>
+    <a class="instructor-info-action grade-submissions-button" href="#{{ id }}-grade">{% trans "Grade Submissions" %}</a>
   </div>
 
   <section aria-hidden="true" class="modal staff-modal" id="{{ id }}-grade" style="top:50px!important;">
@@ -191,7 +199,7 @@
             </tr>
             <tr>
               <td></td>
-              <td style="text-algin:right;">
+              <td>
                 <button type="button" style="float:left;" id="remove-grade">{% trans "Remove grade" %}</button>
                 <button type="button" style="float:right;margin-right:0px;" id="enter-grade-cancel">{% trans "Cancel" %}</button>
                 <button type="submit" style="float:right;margin-right:10px;">{% trans "Submit" %}</button>
