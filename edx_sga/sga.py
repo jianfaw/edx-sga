@@ -264,6 +264,7 @@ class StaffGradedAssignmentXBlock(XBlock):
             "graded": graded,
             "max_score": self.max_score(),
             "upload_allowed": self.upload_allowed(),
+            "is_course_student": not self.is_course_staff(),
         }
 
     def staff_grading_data(self):
