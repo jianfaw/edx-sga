@@ -11,6 +11,7 @@
       <% if (display_name) { %>
         <caption><b><%= display_name %></b></caption>
       <% } %>
+      <% if (is_course_staff) { %>
         <tr>
           <th style="width:30%;"></th>
           <th style="width:51%;"></th>
@@ -56,6 +57,7 @@
           </td>
         </tr>
         <% } %>
+      <% } %>
       </table>
     </div>
   </script>
