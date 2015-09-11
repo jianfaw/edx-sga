@@ -547,11 +547,11 @@ class StaffGradedAssignmentXBlock(XBlock):
         module = StudentModule.objects.get(pk=request.params['module_id'])
         state = json.loads(module.state)
         score = int(request.params['grade'])
-        if self.is_instructor():
-            uuid = request.params['submission_id']
-            submissions_api.set_score(uuid, score, self.max_score())
-        else:
-            state['staff_score'] = score
+        #if self.is_instructor():
+        uuid = request.params['submission_id']
+        submissions_api.set_score(uuid, score, self.max_score())
+        #else:
+        #    state['staff_score'] = score
         state['comment'] = request.params.get('comment', '')
         module.state = json.dumps(state)
         module.save()
