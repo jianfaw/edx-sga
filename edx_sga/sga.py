@@ -2,12 +2,6 @@
 This block defines a Staff Graded Assignment.  Students are shown a rubric
 and invited to upload a file which is then graded by staff.
 """
-# encoding=utf-8
-import sys
-
-reload(sys)
-sys.setdefaultencoding('utf-8')
-
 import datetime
 import hashlib
 import json
@@ -73,20 +67,23 @@ class StaffGradedAssignmentXBlock(XBlock):
     STUDENT_FILEUPLOAD_MAX_SIZE = 4 * 1000 * 1000  # 4 MB
 
     display_name = String(
-        default='作业标题', scope=Scope.settings,
-        help="作业的标题，显示在作业区域的左上方，默认是“作业标题”。"
+        default='Staff Graded Assignment', scope=Scope.settings,
+        help="This name appears in the horizontal navigation at the top of "
+             "the page."
     )
 
     weight = Float(
-        display_name="分数比重",
-        help=("设置分数所占的比重，如果没有设置该值，则直接累加，默认为。。"),
+        display_name="Problem Weight",
+        help=("Defines the number of points each problem is worth. "
+              "If the value is not set, the problem is worth the sum of the "
+              "option point values."),
         values={"min": 0, "step": .1},
         scope=Scope.settings
     )
 
     points = Integer(
-        display_name="最大分值",
-        help=("老师可以给的最大分数，默认100."),
+        display_name="Maximum score",
+        help=("Maximum grade score given to assignment by staff."),
         default=100,
         scope=Scope.settings
     )
