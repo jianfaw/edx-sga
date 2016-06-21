@@ -1,9 +1,5 @@
-"""
-This block defines a Staff Graded Assignment.  Students are shown a rubric
-and invited to upload a file which is then graded by staff.
-"""
 #! /usr/bin/env python
-# coding=utf-8
+#-*- coding: utf-8 -*-
 
 import datetime
 import hashlib
