@@ -67,22 +67,19 @@ class StaffGradedAssignmentXBlock(XBlock):
 
     display_name = String(
         default='作业', scope=Scope.settings,
-        help="This name appears in the horizontal navigation at the top of "
-             "the page."
+        help="作业的标题，显示在作业区域的左上角，默认为“作业”。"
     )
 
     weight = Float(
-        display_name="Problem Weight",
-        help=("Defines the number of points each problem is worth. "
-              "If the value is not set, the problem is worth the sum of the "
-              "option point values."),
+        display_name="分数比重",
+        help=("定义作业分数的比重，如果为空做直接累加，默认为空。"),
         values={"min": 0, "step": .1},
         scope=Scope.settings
     )
 
     points = Integer(
-        display_name="Maximum score",
-        help=("Maximum grade score given to assignment by staff."),
+        display_name="最大分数",
+        help=("定义作业的最大分值，默认为100。"),
         default=100,
         scope=Scope.settings
     )
